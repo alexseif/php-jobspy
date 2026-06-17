@@ -1,0 +1,13 @@
+{
+    "name": "freeworld/php-jobspy",
+    "description": "A PHP library to scrape job listings from various boards, inspired by python-jobspy.",
+    "type": "library",
+    "require": {
+        "php": ">=8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Freeworld\\PhpJobspy\\": "src/"
+        }
+    }
+}
