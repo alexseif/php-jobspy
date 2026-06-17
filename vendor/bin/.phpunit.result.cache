@@ -1,1 +1,0 @@
-{"version":2,"defects":[],"times":{"Freeworld\\PhpJobspy\\Tests\\JobspyTest::testScrapeJobsReturnsArray":0.003,"Freeworld\\PhpJobspy\\Tests\\JobspyTest::testExportToCsvCreatesFileAndWritesData":0.001}}
