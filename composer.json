@@ -2,6 +2,7 @@
     "name": "freeworld/php-jobspy",
     "description": "A PHP library to scrape job listings from various boards, inspired by python-jobspy.",
     "type": "library",
+    "license": "MIT",
     "authors": [
         {
             "name": "Alex Seif",
