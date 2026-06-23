@@ -31,11 +31,11 @@
 - [x] Commit: `feat: implement initial Indeed scraper using Symfony components`
 
 ### P-03: Jobspy Core Integration
-- [ ] `git checkout -b feat/p03-jobspy-integration`
-- [ ] Update `src/Jobspy.php` to instantiate the new provider.
-- [ ] Refactor `exportToCsv()` to handle `JobPostDTO` property access.
-- [ ] Code comments & PER-CS formatting.
-- [ ] Commit: `feat: integrate provider and refactor Jobspy for DTO handling`
+- [x] `git checkout -b feat/p03-jobspy-integration`
+- [x] Update `src/Jobspy.php` to instantiate the new provider.
+- [x] Refactor `exportToCsv()` to handle `JobPostDTO` property access.
+- [x] Code comments & PER-CS formatting.
+- [x] Commit: `feat: integrate provider and refactor Jobspy for DTO handling`
 
 ### P-04: Unit Test Suite & Code Quality
 - [ ] `git checkout -b test/p04-scraper-tests`

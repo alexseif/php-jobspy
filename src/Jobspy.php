@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Freeworld\PhpJobspy;
 
-use Freeworld\PhpJobspy\Scrapers\LinkedInScraper;
+use Freeworld\PhpJobspy\DTO\JobPostDTO;
+use Freeworld\PhpJobspy\Scrapers\IndeedScraper;
 
 class Jobspy
 {
@@ -13,44 +14,45 @@ class Jobspy
      * Integrates with individual platform scrapers based on 'site_name'.
      *
      * @param array $args
-     * @return array
+     * @return JobPostDTO[]
      */
     public function scrapeJobs(array $args): array
     {
-        $sites = $args['site_name'] ?? ['linkedin'];
+        $sites = $args['site_name'] ?? ['indeed'];
+        /** @var JobPostDTO[] $jobs */
         $jobs = [];
 
-        if (in_array('linkedin', $sites, true)) {
-            $linkedInScraper = new LinkedInScraper();
-            $linkedinJobs = $linkedInScraper->scrape($args);
-            $jobs = array_merge($jobs, $linkedinJobs);
+        if (in_array('indeed', $sites, true) || in_array('all', $sites, true)) {
+            $indeedScraper = new IndeedScraper();
+            $indeedJobs = $indeedScraper->scrape($args);
+            $jobs = array_merge($jobs, $indeedJobs);
         }
 
         if (empty($jobs)) {
-            echo "Warning: Live scraping returned 0 jobs (AuthWall/RateLimit?). Falling back to mock data for pipeline testing.\n";
+            echo "Warning: Live scraping returned 0 jobs. Falling back to mock data for pipeline testing.\n";
             return [
-                [
-                    'title' => 'Senior PHP Developer',
-                    'company' => 'Tech Innovators B.V.',
-                    'location' => 'Amsterdam, Netherlands',
-                    'is_remote' => 'No',
-                    'date_posted' => date('Y-m-d'),
-                    'time_ago' => '1 hour ago',
-                    'is_easy_apply' => 'Yes',
-                    'url' => 'https://www.linkedin.com/job/1',
-                    'description' => 'We are looking for a PHP expert with Symfony experience...',
-                ],
-                [
-                    'title' => 'Backend Engineer (PHP)',
-                    'company' => 'Dutch FinTech',
-                    'location' => 'Rotterdam, Netherlands',
-                    'is_remote' => 'Yes',
-                    'date_posted' => date('Y-m-d', strtotime('-1 day')),
-                    'time_ago' => '1 day ago',
-                    'is_easy_apply' => 'No',
-                    'url' => 'https://www.linkedin.com/job/2',
-                    'description' => 'Seeking a backend engineer to manage our MySQL databases...',
-                ]
+                new JobPostDTO(
+                    site: 'MockProvider',
+                    title: 'Senior PHP Developer',
+                    company: 'Tech Innovators B.V.',
+                    company_url: 'https://techinnovators.com',
+                    job_url: 'https://mock.com/job/1',
+                    location: 'Amsterdam, Netherlands',
+                    is_remote: false,
+                    description: 'We are looking for a PHP expert with Symfony experience...',
+                    date_posted: date('Y-m-d')
+                ),
+                new JobPostDTO(
+                    site: 'MockProvider',
+                    title: 'Backend Engineer (PHP)',
+                    company: 'Dutch FinTech',
+                    company_url: '',
+                    job_url: 'https://mock.com/job/2',
+                    location: 'Rotterdam, Netherlands',
+                    is_remote: true,
+                    description: 'Seeking a backend engineer to manage our MySQL databases...',
+                    date_posted: date('Y-m-d', strtotime('-1 day'))
+                )
             ];
         }
 
@@ -58,9 +60,9 @@ class Jobspy
     }
 
     /**
-     * Exports an array of jobs to a CSV file.
+     * Exports an array of JobPostDTOs to a CSV file.
      *
-     * @param array $jobs The scraped jobs array.
+     * @param JobPostDTO[] $jobs The scraped jobs array.
      * @param string $destination The absolute or relative path to the output CSV file.
      * @return bool True on success.
      * @throws \RuntimeException If the file cannot be written.
@@ -84,12 +86,22 @@ class Jobspy
             throw new \RuntimeException(sprintf('Could not open file "%s" for writing.', $destination));
         }
 
-        // Write headers
-        fputcsv($file, array_keys($jobs[0]));
+        // Use reflection or object vars to write headers based on DTO properties
+        $headers = array_keys(get_object_vars($jobs[0]));
+        fputcsv($file, $headers);
 
         // Write rows
         foreach ($jobs as $job) {
-            fputcsv($file, $job);
+            // Because DTO fields might be null, we ensure they are converted to strings appropriately
+            $row = [];
+            foreach (get_object_vars($job) as $propertyValue) {
+                if (is_bool($propertyValue)) {
+                    $row[] = $propertyValue ? 'Yes' : 'No';
+                } else {
+                    $row[] = (string) $propertyValue;
+                }
+            }
+            fputcsv($file, $row);
         }
 
         fclose($file);
