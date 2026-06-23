@@ -47,4 +47,32 @@ class IndeedScraperTest extends TestCase
         $this->assertEquals('https://www.indeed.com/viewjob?jk=12345', $results[0]->job_url);
         $this->assertEquals('Strong PHP skills required.', trim($results[0]->description));
     }
+
+    public function test_scrape_returns_empty_array_when_html_is_empty(): void
+    {
+        $fetcherMock = $this->createMock(FetcherInterface::class);
+        $fetcherMock->method('getHtml')->willReturn('');
+        
+        $scraper = new IndeedScraper($fetcherMock);
+        $results = $scraper->scrape([
+            'search_term' => 'PHP',
+            'location' => 'Remote'
+        ]);
+
+        $this->assertEmpty($results);
+    }
+
+    public function test_scrape_returns_empty_array_on_fetcher_exception(): void
+    {
+        $fetcherMock = $this->createMock(FetcherInterface::class);
+        $fetcherMock->method('getHtml')->willThrowException(new \Exception('Network error'));
+        
+        $scraper = new IndeedScraper($fetcherMock);
+        $results = $scraper->scrape([
+            'search_term' => 'PHP',
+            'location' => 'Remote'
+        ]);
+
+        $this->assertEmpty($results);
+    }
 }
