@@ -32,8 +32,13 @@ class IndeedScraper implements ScraperInterface
         $location = urlencode($args['location'] ?? '');
         $url = sprintf('%s/jobs?q=%s&l=%s', self::BASE_URL, $term, $location);
 
-        $response = $this->client->request('GET', $url);
-        $html = $response->getContent();
+        try {
+            $response = $this->client->request('GET', $url);
+            $html = $response->getContent();
+        } catch (\Throwable $e) {
+            // Anti-bot block or network error
+            return [];
+        }
 
         $crawler = new Crawler($html);
         $jobs = [];
