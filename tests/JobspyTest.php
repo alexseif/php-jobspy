@@ -19,10 +19,10 @@ class JobspyTest extends TestCase
 
     public function testScrapeJobsReturnsArrayOfDTOs(): void
     {
-        // Use an unmapped site_name to trigger the mock data fallback
+        // Use the 'mock' site_name to trigger the mock data scraper
         // so we don't hit live Indeed and cause rate limits or timeouts in tests.
         $jobs = $this->jobspy->scrapeJobs([
-            'site_name' => ['unknown'],
+            'site_name' => ['mock'],
             'search_term' => 'PHP'
         ]);
         
