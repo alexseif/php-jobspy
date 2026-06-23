@@ -65,11 +65,11 @@
 - [x] Commit: `feat: implement PantherFetcher for local bypass`
 
 ### P-07: ScraperAPI Fetcher
-- [ ] `git checkout -b feat/p07-scraperapi-fetcher`
-- [ ] Create `ScraperApiFetcher.php`.
-- [ ] Accept API key and route URL via `api.scraperapi.com`.
-- [ ] Write `ScraperApiFetcherTest.php`.
-- [ ] Commit: `feat: implement ScraperApiFetcher for SaaS deployments`
+- [x] `git checkout -b feat/p07-scraperapi-fetcher`
+- [x] Create `ScraperApiFetcher.php`.
+- [x] Accept API key and route URL via `api.scraperapi.com`.
+- [x] Write `ScraperApiFetcherTest.php`.
+- [x] Commit: `feat: implement ScraperApiFetcher for SaaS deployments`
 
 ### P-08: Refactor Scrapers for Fetcher Injection
 - [ ] `git checkout -b feat/p08-refactor-scrapers`
