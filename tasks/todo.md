@@ -53,6 +53,7 @@
 - [ ] `git checkout -b feat/p05-fetcher-abstraction`
 - [ ] Create `Contracts/FetcherInterface.php`.
 - [ ] Create `NativeHttpFetcher.php` (move HttpClient logic here).
+- [ ] Write `NativeHttpFetcherTest.php`.
 - [ ] Commit: `feat: introduce FetcherInterface and NativeHttpFetcher`
 
 ### P-06: Panther Fetcher & Cookie Injection
@@ -60,16 +61,19 @@
 - [ ] `composer require symfony/panther dbrekelmans/bdi`
 - [ ] Create `PantherFetcher.php`.
 - [ ] Inject cookies and return Panther's DOM source.
+- [ ] Write `PantherFetcherTest.php`.
 - [ ] Commit: `feat: implement PantherFetcher for local bypass`
 
 ### P-07: ScraperAPI Fetcher
 - [ ] `git checkout -b feat/p07-scraperapi-fetcher`
 - [ ] Create `ScraperApiFetcher.php`.
 - [ ] Accept API key and route URL via `api.scraperapi.com`.
+- [ ] Write `ScraperApiFetcherTest.php`.
 - [ ] Commit: `feat: implement ScraperApiFetcher for SaaS deployments`
 
 ### P-08: Refactor Scrapers for Fetcher Injection
 - [ ] `git checkout -b feat/p08-refactor-scrapers`
 - [ ] Refactor `IndeedScraper` to use `FetcherInterface->getHtml()`.
 - [ ] Update `Jobspy.php` to map `$args` to the correct Fetcher instance.
+- [ ] Refactor `IndeedScraperTest.php` to inject mock fetcher.
 - [ ] Commit: `feat: refactor Scrapers to use injected Fetchers`

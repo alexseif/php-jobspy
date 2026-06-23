@@ -61,6 +61,7 @@
 **Branch:** `feat/p05-fetcher-abstraction`
 - Create `src/Contracts/FetcherInterface.php` with `getHtml(string $url): string`.
 - Implement `NativeHttpFetcher` using the existing `symfony/http-client` logic from `IndeedScraper`.
+- Write `tests/Fetchers/NativeHttpFetcherTest.php` with `MockHttpClient`.
 - **Commit:** `feat: introduce FetcherInterface and NativeHttpFetcher`
 
 ---
@@ -72,6 +73,7 @@
 - Create `PantherFetcher` implementing `FetcherInterface`.
 - Add a constructor arg to accept optional `$sessionCookies` array.
 - Boot panther, inject cookies, navigate to URL, and return `client->getPageSource()`.
+- Write `tests/Fetchers/PantherFetcherTest.php` (can be skipped or mocked in CI).
 - **Commit:** `feat: implement PantherFetcher for local bypass`
 
 ---
@@ -83,6 +85,7 @@
 - Accept `$apiKey` via constructor (passed from config/env).
 - Format the HTTP request to route through `http://api.scraperapi.com?api_key=...&url=...`.
 - Return the response body.
+- Write `tests/Fetchers/ScraperApiFetcherTest.php` to verify URL formatting.
 - **Commit:** `feat: implement ScraperApiFetcher for SaaS deployments`
 
 ---
@@ -93,6 +96,7 @@
 - Update `IndeedScraper` constructor to accept `FetcherInterface`.
 - Replace inline `$this->client->request()` with `$html = $this->fetcher->getHtml($url)`.
 - Update `Jobspy.php` factory logic to instantiate the correct Fetcher based on `$args` (e.g., `use_panther`, `scraper_api_key`).
+- Update `IndeedScraperTest` to inject a mock `FetcherInterface`.
 - **Commit:** `feat: refactor Scrapers to use injected Fetchers`
 
 ---
@@ -105,7 +109,11 @@
 | P-02 Provider Impl | 1 PHP | ~2,500 tok / ~$0.04 | ~2,800 tok / ~$0.04 | ~2,500 tok / ~$0.02 | ~3,500 tok / $0 |
 | P-03 Jobspy Integration| 1 PHP | ~1,500 tok / ~$0.02 | ~1,600 tok / ~$0.02 | ~1,500 tok / ~$0.01 | ~2,000 tok / $0 |
 | P-04 Unit Tests | 1 PHP | ~2,500 tok / ~$0.04 | ~2,800 tok / ~$0.04 | ~2,500 tok / ~$0.02 | ~3,500 tok / $0 |
-| **Total** | **5 files** | **~7,500 / ~$0.11** | **~8,300 / ~$0.11** | **~7,500 / ~$0.05** | **~10,500 / $0** |
+| P-05 Fetcher Abstraction| 2 PHP | ~1,500 tok / ~$0.02 | ~1,700 tok / ~$0.02 | ~1,500 tok / ~$0.01 | ~2,000 tok / $0 |
+| P-06 Panther Fetcher | 2 PHP | ~2,000 tok / ~$0.03 | ~2,200 tok / ~$0.03 | ~2,000 tok / ~$0.01 | ~3,000 tok / $0 |
+| P-07 ScraperAPI Fetcher| 2 PHP | ~1,500 tok / ~$0.02 | ~1,600 tok / ~$0.02 | ~1,500 tok / ~$0.01 | ~2,000 tok / $0 |
+| P-08 Refactor Scrapers | 3 PHP | ~2,000 tok / ~$0.03 | ~2,200 tok / ~$0.03 | ~2,000 tok / ~$0.01 | ~3,000 tok / $0 |
+| **Total** | **14 files** | **~14,500 / ~$0.21** | **~16,000 / ~$0.21**| **~14,500 / ~$0.09** | **~20,500 / $0** |
 
 ---
 
