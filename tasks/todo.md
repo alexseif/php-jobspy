@@ -44,3 +44,28 @@
 - [x] Assert extraction logic correctly populates the DTO.
 - [x] Verify: `composer test` passes.
 - [x] Commit: `test: add provider unit tests and conform to PER-CS`
+
+---
+
+## Phase 2: Headless Browser & Authentication
+
+### P-05: Symfony Panther Integration
+- [ ] `git checkout -b feat/p05-panther-integration`
+- [ ] `composer require symfony/panther dbrekelmans/bdi`
+- [ ] Add config for WebDriver binaries.
+- [ ] Write a basic test `tests/PantherSetupTest.php` to ensure it boots.
+- [ ] Commit: `feat: integrate symfony/panther for browser automation`
+
+### P-06: Authentication & Cookie Interface
+- [ ] `git checkout -b feat/p06-cookie-interface`
+- [ ] Add `session_cookies` to `Jobspy` input schema.
+- [ ] Create `PantherClientFactory.php` with a `bootWithCookies(array $cookies)` method.
+- [ ] Navigate to domain, inject cookie, and refresh.
+- [ ] Commit: `feat: implement PantherClientFactory with cookie injection`
+
+### P-07: Panther Scraper Implementation (Indeed/LinkedIn)
+- [ ] `git checkout -b feat/p07-panther-scrapers`
+- [ ] Refactor `IndeedScraper` (or add `LinkedInScraper`) to use Panther.
+- [ ] Traverse the DOM using Panther's crawler.
+- [ ] Ensure `JobPostDTO` parsing remains identical.
+- [ ] Commit: `feat: implement authenticated scraper using Panther`

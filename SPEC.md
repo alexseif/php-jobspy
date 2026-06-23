@@ -84,21 +84,21 @@ readonly class JobPostDTO {
 
 ---
 
-## 4. Immediate Work Item — Scrape-Friendly Provider Integration
+## 4. Phase 2: Symfony Panther & Headless Authentication
 
 ### Problem
-The current implementation started with LinkedIn, which is notoriously hostile to automated scraping (aggressive rate limiting, auth-walls, and forced CAPTCHAs). Continuing to build the core architecture around LinkedIn's quirks will slow down development and require complex proxy management immediately.
+Providers like Indeed and LinkedIn actively block standard HTTP clients (`symfony/http-client`) using Cloudflare and TLS fingerprinting. Furthermore, attempting to script a login form (typing username/password) immediately triggers CAPTCHAs and account bans.
 
 ### Solution
-Pivot the initial development focus to a more scrape-friendly provider (e.g., Indeed, ZipRecruiter, or Bayt). Python `jobspy` explicitly notes that Indeed is currently the best scraper with minimal rate limiting, making it an ideal candidate to establish the core pipeline.
+Integrate **Symfony Panther** to drive an actual Headless Chrome/Firefox browser. To safely bypass authentication walls without triggering captchas, we will use the **Cookie Injection Method**.
 
 **Action Plan:**
-1. Choose the most permissive job board from the expected provider list.
-2. Implement the `ScraperInterface` for this new provider.
-3. Establish the HTTP request flow, HTML parsing (or JSON API interception), and map the output precisely to the `JobPost` schema defined in Section 2.2.
-4. Ensure the downstream `JobScreener` pipeline can cleanly receive this data without needing a "deep-fetch" workaround (as scrape-friendly sites often include the description in the initial payload or a simple secondary open request).
+1. Require `symfony/panther` to enable full JavaScript rendering and browser emulation.
+2. Update the `ScraperInterface` and configuration array to accept optional authentication cookies (e.g., `li_at` for LinkedIn, or Indeed session cookies).
+3. Implement `PantherScraper` implementations (or update existing ones) that open the browser, inject the user-provided session cookies into the domain, and refresh the page to instantly access the authenticated state.
+4. Extract the DOM directly from Panther and hydrate the `JobPostDTO`.
 
-Once the core architecture and output schema are solidified with a stable provider, we can re-introduce LinkedIn behind a proxy rotation manager in Phase 2.
+This ensures we can bypass anti-bot measures safely without storing credentials or triggering automated login bans.
 
 ---
 
@@ -108,6 +108,7 @@ Once the core architecture and output schema are solidified with a stable provid
 |---|---|
 | Language | PHP 8.1+ (strict_types) |
 | HTTP Client | `symfony/http-client` (PSR-18 compatible, natively async) |
+| Browser | `symfony/panther` (Headless Chrome/Firefox for JS/Bot Bypass) |
 | HTML Parser | `symfony/dom-crawler` + `symfony/css-selector` |
 | Config | `symfony/yaml` |
 | Testing | PHPUnit |
@@ -148,6 +149,7 @@ Tests use mock HTTP clients (`Symfony\Component\HttpClient\MockHttpClient`) — 
 ### Ask First
 - Adding a new job board scraper (affects package scope)
 - Changing the job array schema (breaks downstream CSV and screener)
+- Modifying how session cookies are managed or stored (must remain local and ephemeral)
 
 ### Never
 - Store credentials or API keys in source code

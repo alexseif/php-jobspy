@@ -8,6 +8,7 @@
 
 ```
 [Q1] Provider Choice → P-01 DTO & Interface → P-02 Scraper Implementation → P-03 Jobspy Integration → P-04 Unit Tests
+[Phase 2] P-05 Panther Installation → P-06 Auth/Cookie Interface → P-07 Panther Scraper Implementation
 ```
 
 ---
@@ -52,6 +53,38 @@
 - Assert correct extraction and hydration into `JobPostDTO`s.
 - Run `composer test` and code style fixers (`PER-CS`).
 - **Commit:** `test: add provider unit tests and conform to PER-CS`
+
+---
+
+### P-05: Symfony Panther Integration
+**Status:** Pending
+**Branch:** `feat/p05-panther-integration`
+- Update `composer.json` to require `symfony/panther` and `dbrekelmans/bdi`.
+- Add a configuration block or `.env` variable setup to manage the local ChromeDriver/GeckoDriver installation.
+- Verify Panther can boot up locally via a basic assertion.
+- **Commit:** `feat: integrate symfony/panther for browser automation`
+
+---
+
+### P-06: Authentication & Cookie Interface
+**Status:** Depends on P-05
+**Branch:** `feat/p06-cookie-interface`
+- Update `ScraperInterface` and/or `Jobspy` argument schema to accept a new `session_cookies` array.
+- Create a reusable `PantherClientFactory` that:
+  1. Boots Panther.
+  2. Navigates to the target domain's homepage.
+  3. Injects the provided `session_cookies` (e.g., `['name' => 'li_at', 'value' => '...', 'domain' => '.linkedin.com']`).
+- **Commit:** `feat: implement PantherClientFactory with cookie injection`
+
+---
+
+### P-07: Panther Scraper Implementation (Indeed/LinkedIn)
+**Status:** Depends on P-06
+**Branch:** `feat/p07-panther-scrapers`
+- Refactor `IndeedScraper` (or create `LinkedInScraper`) to conditionally use the `PantherClientFactory` if the HTTP client fails or if `use_panther` is true.
+- Execute DOM parsing using Panther's native crawler.
+- Map the authenticated DOM to `JobPostDTO`.
+- **Commit:** `feat: implement authenticated scraper using Panther`
 
 ---
 
