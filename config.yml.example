@@ -1,0 +1,14 @@
+# php-jobspy Configuration
+
+# Which fetcher backend to use: 'native', 'panther', or 'scraper_api'
+fetcher: scraper_api
+
+# If using scraper_api, provide your key here
+scraper_api_key: 'YOUR_SCRAPER_API_KEY_HERE'
+
+# Set default sites to scrape
+default_sites:
+  - indeed
+
+# Set to true to use the mock scraper for testing pipelines without hitting network limits
+use_mock: false
