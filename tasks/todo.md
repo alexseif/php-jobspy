@@ -6,7 +6,7 @@
 
 ## Blocked — Answer Required Before Building
 
-- [ ] **Q1:** Which scrape-friendly provider should we establish the baseline with? (A. Indeed, B. ZipRecruiter, C. Bayt, or other)
+- [x] **Q1:** Which scrape-friendly provider should we establish the baseline with? **(Indeed)**
 - [ ] **AWAITING `/build` COMMAND**
 
 ---
@@ -21,14 +21,14 @@
 - [x] Code comments & PER-CS formatting.
 - [x] Commit: `feat: implement JobPostDTO and ScraperInterface with Symfony dependencies`
 
-### P-02: Scrape-Friendly Provider Implementation
-- [ ] `git checkout -b feat/p02-scraper-impl`
-- [ ] Create `src/Scrapers/{Provider}Scraper.php`.
-- [ ] Implement `symfony/http-client` HTTP request with user-agents.
-- [ ] Implement `symfony/dom-crawler` parsing.
-- [ ] Map output to `JobPostDTO`.
-- [ ] Code comments & PER-CS formatting.
-- [ ] Commit: `feat: implement initial {Provider} scraper using Symfony components`
+### P-02: Scrape-Friendly Provider Implementation (Indeed)
+- [x] `git checkout -b feat/p02-scraper-impl`
+- [x] Create `src/Scrapers/IndeedScraper.php`.
+- [x] Implement `symfony/http-client` HTTP request with user-agents.
+- [x] Implement `symfony/dom-crawler` parsing.
+- [x] Map output to `JobPostDTO`.
+- [x] Code comments & PER-CS formatting.
+- [x] Commit: `feat: implement initial Indeed scraper using Symfony components`
 
 ### P-03: Jobspy Core Integration
 - [ ] `git checkout -b feat/p03-jobspy-integration`
