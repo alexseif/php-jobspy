@@ -72,8 +72,8 @@
 - [x] Commit: `feat: implement ScraperApiFetcher for SaaS deployments`
 
 ### P-08: Refactor Scrapers for Fetcher Injection
-- [ ] `git checkout -b feat/p08-refactor-scrapers`
-- [ ] Refactor `IndeedScraper` to use `FetcherInterface->getHtml()`.
-- [ ] Update `Jobspy.php` to map `$args` to the correct Fetcher instance.
-- [ ] Refactor `IndeedScraperTest.php` to inject mock fetcher.
-- [ ] Commit: `feat: refactor Scrapers to use injected Fetchers`
+- [x] `git checkout -b feat/p08-refactor-scrapers`
+- [x] Refactor `IndeedScraper` to use `FetcherInterface->getHtml()`.
+- [x] Update `Jobspy.php` to map `$args` to the correct Fetcher instance.
+- [x] Refactor `IndeedScraperTest.php` to inject mock fetcher.
+- [x] Commit: `feat: refactor Scrapers to use injected Fetchers`

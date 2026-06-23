@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Freeworld\PhpJobspy;
 
 use Freeworld\PhpJobspy\DTO\JobPostDTO;
+use Freeworld\PhpJobspy\Fetchers\NativeHttpFetcher;
+use Freeworld\PhpJobspy\Fetchers\PantherFetcher;
+use Freeworld\PhpJobspy\Fetchers\ScraperApiFetcher;
 use Freeworld\PhpJobspy\Scrapers\IndeedScraper;
 
 class Jobspy
@@ -23,7 +26,16 @@ class Jobspy
         $jobs = [];
 
         if (in_array('indeed', $sites, true) || in_array('all', $sites, true)) {
-            $indeedScraper = new IndeedScraper();
+            $fetcher = null;
+            if (!empty($args['scraper_api_key'])) {
+                $fetcher = new ScraperApiFetcher($args['scraper_api_key']);
+            } elseif (!empty($args['use_panther'])) {
+                $fetcher = new PantherFetcher();
+            } else {
+                $fetcher = new NativeHttpFetcher();
+            }
+
+            $indeedScraper = new IndeedScraper($fetcher);
             $indeedJobs = $indeedScraper->scrape($args);
             $jobs = array_merge($jobs, $indeedJobs);
         }

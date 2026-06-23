@@ -5,29 +5,18 @@ declare(strict_types=1);
 namespace Freeworld\PhpJobspy\Scrapers;
 
 use Freeworld\PhpJobspy\DTO\JobPostDTO;
+use Freeworld\PhpJobspy\Contracts\FetcherInterface;
+use Freeworld\PhpJobspy\Fetchers\NativeHttpFetcher;
 use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Component\HttpClient\HttpClient;
 
 class IndeedScraper implements ScraperInterface
 {
     private const BASE_URL = 'https://www.indeed.com';
-    private HttpClientInterface $client;
+    private FetcherInterface $fetcher;
 
-    public function __construct(?HttpClientInterface $client = null)
+    public function __construct(?FetcherInterface $fetcher = null)
     {
-        $this->client = $client ?? HttpClient::create([
-            'headers' => [
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-                'Accept-Language' => 'en-US,en;q=0.9',
-                'Sec-Fetch-Dest' => 'document',
-                'Sec-Fetch-Mode' => 'navigate',
-                'Sec-Fetch-Site' => 'none',
-                'Sec-Fetch-User' => '?1',
-                'Upgrade-Insecure-Requests' => '1',
-            ]
-        ]);
+        $this->fetcher = $fetcher ?? new NativeHttpFetcher();
     }
 
     /**
@@ -40,8 +29,10 @@ class IndeedScraper implements ScraperInterface
         $url = sprintf('%s/jobs?q=%s&l=%s', self::BASE_URL, $term, $location);
 
         try {
-            $response = $this->client->request('GET', $url);
-            $html = $response->getContent();
+            $html = $this->fetcher->getHtml($url);
+            if (empty($html)) {
+                return [];
+            }
         } catch (\Throwable $e) {
             // Anti-bot block or network error
             return [];

@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Freeworld\PhpJobspy\Tests\Scrapers;
 
+use Freeworld\PhpJobspy\Contracts\FetcherInterface;
 use Freeworld\PhpJobspy\Scrapers\IndeedScraper;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpClient\MockHttpClient;
-use Symfony\Component\HttpClient\Response\MockResponse;
 
 class IndeedScraperTest extends TestCase
 {
@@ -28,10 +27,10 @@ class IndeedScraperTest extends TestCase
         </html>
         HTML;
 
-        $mockResponse = new MockResponse($dummyHtml);
-        $client = new MockHttpClient($mockResponse);
+        $fetcherMock = $this->createMock(FetcherInterface::class);
+        $fetcherMock->method('getHtml')->willReturn($dummyHtml);
         
-        $scraper = new IndeedScraper($client);
+        $scraper = new IndeedScraper($fetcherMock);
         
         $results = $scraper->scrape([
             'search_term' => 'PHP',
