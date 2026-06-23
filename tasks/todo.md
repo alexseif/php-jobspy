@@ -50,11 +50,11 @@
 ## Phase 2: Fetcher Abstraction & Anti-Bot Architecture
 
 ### P-05: Fetcher Abstraction
-- [ ] `git checkout -b feat/p05-fetcher-abstraction`
-- [ ] Create `Contracts/FetcherInterface.php`.
-- [ ] Create `NativeHttpFetcher.php` (move HttpClient logic here).
-- [ ] Write `NativeHttpFetcherTest.php`.
-- [ ] Commit: `feat: introduce FetcherInterface and NativeHttpFetcher`
+- [x] `git checkout -b feat/p05-fetcher-abstraction`
+- [x] Create `Contracts/FetcherInterface.php`.
+- [x] Create `NativeHttpFetcher.php` (move HttpClient logic here).
+- [x] Write `NativeHttpFetcherTest.php`.
+- [x] Commit: `feat: introduce FetcherInterface and NativeHttpFetcher`
 
 ### P-06: Panther Fetcher & Cookie Injection
 - [ ] `git checkout -b feat/p06-panther-fetcher`
