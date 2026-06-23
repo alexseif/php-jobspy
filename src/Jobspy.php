@@ -29,7 +29,7 @@ class Jobspy
         }
 
         if (empty($jobs)) {
-            echo "Warning: Live scraping returned 0 jobs. Falling back to mock data for pipeline testing.\n";
+            error_log("Warning: Live scraping returned 0 jobs. Falling back to mock data for pipeline testing.");
             return [
                 new JobPostDTO(
                     site: 'MockProvider',
@@ -86,15 +86,15 @@ class Jobspy
             throw new \RuntimeException(sprintf('Could not open file "%s" for writing.', $destination));
         }
 
-        // Use reflection or object vars to write headers based on DTO properties
-        $headers = array_keys(get_object_vars($jobs[0]));
+        // Get headers from the first DTO
+        $firstJobArray = $jobs[0]->toArray();
+        $headers = array_keys($firstJobArray);
         fputcsv($file, $headers);
 
         // Write rows
         foreach ($jobs as $job) {
-            // Because DTO fields might be null, we ensure they are converted to strings appropriately
             $row = [];
-            foreach (get_object_vars($job) as $propertyValue) {
+            foreach ($job->toArray() as $propertyValue) {
                 if (is_bool($propertyValue)) {
                     $row[] = $propertyValue ? 'Yes' : 'No';
                 } else {

@@ -27,4 +27,14 @@ readonly class JobPostDTO
         public ?string $date_posted = null
     ) {
     }
+
+    /**
+     * Converts the DTO to an associative array for serialization.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return get_object_vars($this);
+    }
 }
