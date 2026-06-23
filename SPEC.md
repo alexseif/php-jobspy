@@ -84,21 +84,26 @@ readonly class JobPostDTO {
 
 ---
 
-## 4. Phase 2: Symfony Panther & Headless Authentication
+## 4. Phase 2: Fetcher Abstraction & Anti-Bot Architecture
 
 ### Problem
-Providers like Indeed and LinkedIn actively block standard HTTP clients (`symfony/http-client`) using Cloudflare and TLS fingerprinting. Furthermore, attempting to script a login form (typing username/password) immediately triggers CAPTCHAs and account bans.
+Providers like Indeed and LinkedIn actively block standard HTTP clients (`symfony/http-client`) using Cloudflare and TLS fingerprinting. Different environments require different solutions: local development can use heavy headless browsers, while cloud deployments require lightweight proxy APIs.
 
 ### Solution
-Integrate **Symfony Panther** to drive an actual Headless Chrome/Firefox browser. To safely bypass authentication walls without triggering captchas, we will use the **Cookie Injection Method**.
+Decouple **Fetching** (network transport/rendering) from **Scraping** (DOM parsing) via a `FetcherInterface`. The `Scraper` classes will no longer care *how* the HTML is obtained, only that they receive valid HTML to parse.
+
+**The Fetcher Implementations:**
+1. **`PantherFetcher`:** Uses `symfony/panther` to drive an actual Headless Chrome browser locally. Perfect for $0 local development and supports Cookie Injection to bypass login captchas.
+2. **`ScraperApiFetcher`:** Uses standard HTTP to call `scraperapi.com`. Perfect for lightweight, infinitely scalable SaaS cloud deployments. Requires a config file/ENV setup for the API Key.
+3. **`NativeHttpFetcher`:** Uses standard `symfony/http-client`. Fast, but only useful for scrape-friendly sites that don't employ Cloudflare.
 
 **Action Plan:**
-1. Require `symfony/panther` to enable full JavaScript rendering and browser emulation.
-2. Update the `ScraperInterface` and configuration array to accept optional authentication cookies (e.g., `li_at` for LinkedIn, or Indeed session cookies).
-3. Implement `PantherScraper` implementations (or update existing ones) that open the browser, inject the user-provided session cookies into the domain, and refresh the page to instantly access the authenticated state.
-4. Extract the DOM directly from Panther and hydrate the `JobPostDTO`.
+1. Create `Contracts/FetcherInterface.php`.
+2. Implement the three Fetcher strategies.
+3. Refactor `IndeedScraper` to accept a `FetcherInterface` via Dependency Injection.
+4. Establish a configuration mechanism (`.env` or array) for the ScraperAPI Key and default Fetcher choice.
 
-This ensures we can bypass anti-bot measures safely without storing credentials or triggering automated login bans.
+This ensures `php-jobspy` remains completely agnostic to the anti-bot strategy.
 
 ---
 

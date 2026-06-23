@@ -8,7 +8,7 @@
 
 ```
 [Q1] Provider Choice → P-01 DTO & Interface → P-02 Scraper Implementation → P-03 Jobspy Integration → P-04 Unit Tests
-[Phase 2] P-05 Panther Installation → P-06 Auth/Cookie Interface → P-07 Panther Scraper Implementation
+[Phase 2] P-05 Fetcher Abstraction → P-06 Panther Fetcher → P-07 ScraperAPI Fetcher → P-08 Refactor Scrapers
 ```
 
 ---
@@ -56,35 +56,44 @@
 
 ---
 
-### P-05: Symfony Panther Integration
+### P-05: Fetcher Abstraction
 **Status:** Pending
-**Branch:** `feat/p05-panther-integration`
-- Update `composer.json` to require `symfony/panther` and `dbrekelmans/bdi`.
-- Add a configuration block or `.env` variable setup to manage the local ChromeDriver/GeckoDriver installation.
-- Verify Panther can boot up locally via a basic assertion.
-- **Commit:** `feat: integrate symfony/panther for browser automation`
+**Branch:** `feat/p05-fetcher-abstraction`
+- Create `src/Contracts/FetcherInterface.php` with `getHtml(string $url): string`.
+- Implement `NativeHttpFetcher` using the existing `symfony/http-client` logic from `IndeedScraper`.
+- **Commit:** `feat: introduce FetcherInterface and NativeHttpFetcher`
 
 ---
 
-### P-06: Authentication & Cookie Interface
+### P-06: Panther Fetcher & Cookie Injection
 **Status:** Depends on P-05
-**Branch:** `feat/p06-cookie-interface`
-- Update `ScraperInterface` and/or `Jobspy` argument schema to accept a new `session_cookies` array.
-- Create a reusable `PantherClientFactory` that:
-  1. Boots Panther.
-  2. Navigates to the target domain's homepage.
-  3. Injects the provided `session_cookies` (e.g., `['name' => 'li_at', 'value' => '...', 'domain' => '.linkedin.com']`).
-- **Commit:** `feat: implement PantherClientFactory with cookie injection`
+**Branch:** `feat/p06-panther-fetcher`
+- `composer require symfony/panther dbrekelmans/bdi`.
+- Create `PantherFetcher` implementing `FetcherInterface`.
+- Add a constructor arg to accept optional `$sessionCookies` array.
+- Boot panther, inject cookies, navigate to URL, and return `client->getPageSource()`.
+- **Commit:** `feat: implement PantherFetcher for local bypass`
 
 ---
 
-### P-07: Panther Scraper Implementation (Indeed/LinkedIn)
-**Status:** Depends on P-06
-**Branch:** `feat/p07-panther-scrapers`
-- Refactor `IndeedScraper` (or create `LinkedInScraper`) to conditionally use the `PantherClientFactory` if the HTTP client fails or if `use_panther` is true.
-- Execute DOM parsing using Panther's native crawler.
-- Map the authenticated DOM to `JobPostDTO`.
-- **Commit:** `feat: implement authenticated scraper using Panther`
+### P-07: ScraperAPI Fetcher
+**Status:** Depends on P-05
+**Branch:** `feat/p07-scraperapi-fetcher`
+- Create `ScraperApiFetcher` implementing `FetcherInterface`.
+- Accept `$apiKey` via constructor (passed from config/env).
+- Format the HTTP request to route through `http://api.scraperapi.com?api_key=...&url=...`.
+- Return the response body.
+- **Commit:** `feat: implement ScraperApiFetcher for SaaS deployments`
+
+---
+
+### P-08: Refactor Scrapers for Fetcher Injection
+**Status:** Depends on P-07
+**Branch:** `feat/p08-refactor-scrapers`
+- Update `IndeedScraper` constructor to accept `FetcherInterface`.
+- Replace inline `$this->client->request()` with `$html = $this->fetcher->getHtml($url)`.
+- Update `Jobspy.php` factory logic to instantiate the correct Fetcher based on `$args` (e.g., `use_panther`, `scraper_api_key`).
+- **Commit:** `feat: refactor Scrapers to use injected Fetchers`
 
 ---
 

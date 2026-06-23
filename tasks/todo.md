@@ -47,25 +47,29 @@
 
 ---
 
-## Phase 2: Headless Browser & Authentication
+## Phase 2: Fetcher Abstraction & Anti-Bot Architecture
 
-### P-05: Symfony Panther Integration
-- [ ] `git checkout -b feat/p05-panther-integration`
+### P-05: Fetcher Abstraction
+- [ ] `git checkout -b feat/p05-fetcher-abstraction`
+- [ ] Create `Contracts/FetcherInterface.php`.
+- [ ] Create `NativeHttpFetcher.php` (move HttpClient logic here).
+- [ ] Commit: `feat: introduce FetcherInterface and NativeHttpFetcher`
+
+### P-06: Panther Fetcher & Cookie Injection
+- [ ] `git checkout -b feat/p06-panther-fetcher`
 - [ ] `composer require symfony/panther dbrekelmans/bdi`
-- [ ] Add config for WebDriver binaries.
-- [ ] Write a basic test `tests/PantherSetupTest.php` to ensure it boots.
-- [ ] Commit: `feat: integrate symfony/panther for browser automation`
+- [ ] Create `PantherFetcher.php`.
+- [ ] Inject cookies and return Panther's DOM source.
+- [ ] Commit: `feat: implement PantherFetcher for local bypass`
 
-### P-06: Authentication & Cookie Interface
-- [ ] `git checkout -b feat/p06-cookie-interface`
-- [ ] Add `session_cookies` to `Jobspy` input schema.
-- [ ] Create `PantherClientFactory.php` with a `bootWithCookies(array $cookies)` method.
-- [ ] Navigate to domain, inject cookie, and refresh.
-- [ ] Commit: `feat: implement PantherClientFactory with cookie injection`
+### P-07: ScraperAPI Fetcher
+- [ ] `git checkout -b feat/p07-scraperapi-fetcher`
+- [ ] Create `ScraperApiFetcher.php`.
+- [ ] Accept API key and route URL via `api.scraperapi.com`.
+- [ ] Commit: `feat: implement ScraperApiFetcher for SaaS deployments`
 
-### P-07: Panther Scraper Implementation (Indeed/LinkedIn)
-- [ ] `git checkout -b feat/p07-panther-scrapers`
-- [ ] Refactor `IndeedScraper` (or add `LinkedInScraper`) to use Panther.
-- [ ] Traverse the DOM using Panther's crawler.
-- [ ] Ensure `JobPostDTO` parsing remains identical.
-- [ ] Commit: `feat: implement authenticated scraper using Panther`
+### P-08: Refactor Scrapers for Fetcher Injection
+- [ ] `git checkout -b feat/p08-refactor-scrapers`
+- [ ] Refactor `IndeedScraper` to use `FetcherInterface->getHtml()`.
+- [ ] Update `Jobspy.php` to map `$args` to the correct Fetcher instance.
+- [ ] Commit: `feat: refactor Scrapers to use injected Fetchers`
