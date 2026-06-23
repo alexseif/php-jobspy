@@ -38,9 +38,9 @@
 - [x] Commit: `feat: integrate provider and refactor Jobspy for DTO handling`
 
 ### P-04: Unit Test Suite & Code Quality
-- [ ] `git checkout -b test/p04-scraper-tests`
-- [ ] Create `tests/Scrapers/{Provider}ScraperTest.php`.
-- [ ] Implement `MockHttpClient` returning static HTML fixture.
-- [ ] Assert extraction logic correctly populates the DTO.
-- [ ] Verify: `composer test` passes.
-- [ ] Commit: `test: add provider unit tests and conform to PER-CS`
+- [x] `git checkout -b test/p04-scraper-tests`
+- [x] Create `tests/Scrapers/{Provider}ScraperTest.php`.
+- [x] Implement `MockHttpClient` returning static HTML fixture.
+- [x] Assert extraction logic correctly populates the DTO.
+- [x] Verify: `composer test` passes.
+- [x] Commit: `test: add provider unit tests and conform to PER-CS`
