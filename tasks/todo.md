@@ -57,12 +57,12 @@
 - [x] Commit: `feat: introduce FetcherInterface and NativeHttpFetcher`
 
 ### P-06: Panther Fetcher & Cookie Injection
-- [ ] `git checkout -b feat/p06-panther-fetcher`
-- [ ] `composer require symfony/panther dbrekelmans/bdi`
-- [ ] Create `PantherFetcher.php`.
-- [ ] Inject cookies and return Panther's DOM source.
-- [ ] Write `PantherFetcherTest.php`.
-- [ ] Commit: `feat: implement PantherFetcher for local bypass`
+- [x] `git checkout -b feat/p06-panther-fetcher`
+- [x] `composer require symfony/panther dbrekelmans/bdi`
+- [x] Create `PantherFetcher.php`.
+- [x] Inject cookies and return Panther's DOM source.
+- [x] Write `PantherFetcherTest.php`.
+- [x] Commit: `feat: implement PantherFetcher for local bypass`
 
 ### P-07: ScraperAPI Fetcher
 - [ ] `git checkout -b feat/p07-scraperapi-fetcher`
